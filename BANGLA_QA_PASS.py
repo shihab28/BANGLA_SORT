@@ -5,15 +5,14 @@ import json
 from tkinter import *
 from tkinter import font
 
-# from PIL import ImageGrab
-import pyscreenshot as ImageGrab
+from PIL import ImageGrab
+# import pyscreenshot as ImageGrab
 import resource.GET_LETTER_LIST as GET_LETTER_LIST
 
 ########################################################################
 font_size = 128
 font_bangla = 'Akshar Unicode'
 ########################################################################
-
 
 
 curDir = f"{os.path.dirname(__file__)}/resource".replace("\\", "/")

@@ -5,7 +5,8 @@ block_cipher = None
 
 
 a = Analysis(['BANGLA_QA_PASS.py'],
-             pathex=[],
+             pathex=[(r'C:\Users\dtco-gf\Desktop\AUTOMATION_TEAM\BANGLA_SORT\resource', '.'), 
+             ('C:\Users\dtco-gf\Desktop\AUTOMATION_TEAM\BANGLA_SORT\font', '.')],
              binaries=[],
              datas=[],
              hiddenimports=[],
