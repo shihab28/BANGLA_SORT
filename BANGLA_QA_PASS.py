@@ -7,7 +7,6 @@ from tkinter import font
 
 # from PIL import ImageGrab
 import pyscreenshot as ImageGrab
-
 import resource.GET_LETTER_LIST as GET_LETTER_LIST
 
 curDir = f"{os.path.dirname(__file__)}/resource".replace("\\", "/")
@@ -29,10 +28,6 @@ rejected_letter_dict = {}
 print("Total Count : ", len(all_letter_list))
 
 curIndexPath = f"{curDir}/curIndex.txt"
-
-
-
-
 
 # print(all_letter_list)
 
