@@ -341,6 +341,10 @@ def updateListLetter(eve=None):
     updateLabel()
 
 
+# def controlPressed(eve=None):
+    
+
+
 def saveAllLetter(eve=None):
     global list_reject, list_accept, acceptedFilePath, rejectedFilePath,\
         rejected_letter_dict, accepted_letter_dict
@@ -373,11 +377,6 @@ def saveEnviroment(eve=None):
     root.destroy()
     os.system("@echo off")
     os.startfile(__file__)
-
-
-
-
-
 
 
 # highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=0, borderwidth=0
@@ -519,6 +518,9 @@ root.bind("<Up>", prevLetter)
 root.bind("<Return>", acceptLetter)
 root.bind("<Delete>", rejectLetter)
 root.bind("<Motion>", updateCord)
+root.bind("<Control-s>", saveAllLetter)
+root.bind("<Control-S>", saveAllLetter)
+
 cavas_label.bind("<Motion>", updateCord)
 
 list_letter.bind("<Double-Button-1>", listDoubleCLick)
