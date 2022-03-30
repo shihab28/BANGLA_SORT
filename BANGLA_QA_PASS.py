@@ -400,8 +400,6 @@ button_next = Button(frame_button_move, bg=color_root_bg, fg=color_root_fg, font
 button_next['text'] = ">>>".upper()
 button_next.pack(padx=3, pady=5, expand=True, fill="x", side=LEFT)
 
-
-
 cavas_label = Canvas(frame_Label, bg = 'White', width=canvas_width, height=canvas_height, \
     highlightbackground='White', highlightcolor='White', highlightthickness=0, border=0, borderwidth=0)
 label_comb = Label(cavas_label, bg='White', fg='Black', font=font_shutonni_label,\
