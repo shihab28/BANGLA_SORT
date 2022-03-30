@@ -27,7 +27,13 @@ rejected_letter_list = []
 accepted_letter_dict = {}
 rejected_letter_dict = {}
 print("Total Count : ", len(all_letter_list))
-curIndex = 0
+
+curIndexPath = f"{curDir}/curIndex.txt"
+
+
+
+
+
 # print(all_letter_list)
 
 color_root_bg = '#8B9DC3'
@@ -52,6 +58,26 @@ def limitMin(val, limVal):
     if val <= limVal:
         return limVal
     return val
+
+def updateCurIndex():
+    global curIndexPath, curIndex
+    with open(curIndexPath, 'w', encoding='utf-8') as wf:
+        wf.writelines(str(curIndex))
+    wf.close()
+
+
+curIndex = 0
+if os.path.exists(curIndexPath):
+    with open(curIndexPath, 'r', encoding='utf-8') as rf:
+        lines = rf.readlines()
+    try:
+        curIndex = int(lines[0].strip())
+    except:
+        updateCurIndex()
+
+else:
+    updateCurIndex()
+
 
 font_size = 96
 
@@ -81,6 +107,8 @@ def hasKey(tempDIct={}, keyF=None):
         return True
     return False
 
+
+
 def rejectLetter(eve=None):
     global  curIndex, list_letter, list_reject, list_accept, \
         rejected_letter_dict, accepted_letter_dict
@@ -91,7 +119,9 @@ def rejectLetter(eve=None):
         rejected_letter_dict[curLet] = all_letter_dict[curLet]
 
     saveLetter(imageStatus='rejected')
-
+    list_letter.yview(curIndex)
+    list_reject.yview(END)
+    list_accept.yview(END)
 
     tempListAcp = list(list_accept.get(0, END))
 
@@ -121,6 +151,9 @@ def acceptLetter(eve=None):
 
     saveLetter(imageStatus='accepted')
 
+    list_reject.yview(END)
+    list_accept.yview(END)
+
     tempListRej = list(list_reject.get(0, END))
     if curLet in tempListRej:
         if os.path.isfile(f"{rejectedImageDir}/{curLet}.{imageExt}"):
@@ -143,6 +176,7 @@ def updateLabel(eve=None):
     curLetter = all_letter_list[curIndex]
     label_comb['text'] = curLetter
     list_letter.select_set(curIndex)
+    list_letter.yview(curIndex-(font_size//6))
 
 def prevLetter(eve=None):
     global  curIndex, list_letter
@@ -244,6 +278,8 @@ def updateListRej(eve=None):
         fn =  fil.split('.')[0]
         if fn not in tempRejList:
             os.remove(f"{rejectedImageDir}/{fil}")
+
+    list_reject.yview(END)
     
 
 def updateListAcp(eve=None):
@@ -270,6 +306,19 @@ def updateListAcp(eve=None):
         if fn not in tempAcpList:
             os.remove(f"{acceptedImageDir}/{fil}")
 
+    list_accept.yview(END)
+
+def updateListLetter(eve=None):
+    global list_letter, curIndex
+    for ind, letter in enumerate(all_letter_list):
+        list_letter.insert(ind, letter)
+        if str(letter).strip() in accepted_letter_list:
+            list_letter.itemconfig(ind,{'bg': color_acp_bg, 'fg': color_acp_fg})
+        if str(letter).strip() in rejected_letter_list:
+            list_letter.itemconfig(ind,{'bg': color_rej_bg, 'fg' : color_rej_fg})
+    list_letter.yview(curIndex)
+    updateLabel()
+
 
 def saveAllLetter(eve=None):
     global list_reject, list_accept, acceptedFilePath, rejectedFilePath,\
@@ -290,6 +339,8 @@ def saveAllLetter(eve=None):
     with open(rejectedJSOnPath, 'w', encoding='utf-8') as jo:
         json.dump(rejected_letter_dict, jo)
     jo.close()
+
+    updateCurIndex()
 
     print("Saved")
 
@@ -360,13 +411,10 @@ label_comb.pack(padx=0, pady=0, expand=True, fill="both")
 cavas_label.create_window(canvas_width//2, canvas_width//2, window=label_comb)
 cavas_label.pack(padx=0, pady=0, expand=True, fill="both")
 
-updateLabel()
-
 
 frame_Choice = Frame(frame_root, bg=color_root_bg, \
     highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=2, border=2, borderwidth=2)
 frame_Choice.pack(padx=0, pady=0, expand=True, fill="both", side=LEFT)
-
 
 
 
@@ -406,17 +454,14 @@ label_ends.pack(padx=0, pady=0, expand=True, fill="x")
 
 updateListAcp()
 updateListRej()
+updateListLetter()
 
-for ind, letter in enumerate(all_letter_list):
-    list_letter.insert(ind, letter)
-    if str(letter).strip() in accepted_letter_list:
-        list_letter.itemconfig(ind,{'bg': color_acp_bg, 'fg': color_acp_fg})
-    if str(letter).strip() in rejected_letter_list:
-        list_letter.itemconfig(ind,{'bg': color_rej_bg, 'fg' : color_rej_fg})
 
 
 root.bind("<Right>", nexttLetter)
 root.bind("<Left>", prevLetter)
+root.bind("<Down>", nexttLetter)
+root.bind("<Up>", prevLetter)
 root.bind("<Return>", acceptLetter)
 root.bind("<Delete>", rejectLetter)
 root.bind("<Motion>", updateCord)
