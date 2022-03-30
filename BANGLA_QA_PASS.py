@@ -1,4 +1,4 @@
-import os
+import os, sys
 import shutil
 import json
 
@@ -9,7 +9,15 @@ from tkinter import font
 import pyscreenshot as ImageGrab
 import resource.GET_LETTER_LIST as GET_LETTER_LIST
 
+########################################################################
+font_size = 128
+font_bangla = 'Akshar Unicode'
+########################################################################
+
+
+
 curDir = f"{os.path.dirname(__file__)}/resource".replace("\\", "/")
+fontDir = f"{os.path.dirname(__file__)}/font".replace("\\", "/")
 # inputFilePath = f'{curDir}/input.txt'
 inputFilePath = f'{curDir}/input.json'
 acceptedFilePath = f'{curDir}/accepted.txt'
@@ -27,7 +35,7 @@ accepted_letter_dict = {}
 rejected_letter_dict = {}
 print("Total Count : ", len(all_letter_list))
 
-curIndexPath = f"{curDir}/curIndex.txt"
+curIndexPath = f"{curDir}/curAtr.txt"
 
 # print(all_letter_list)
 
@@ -48,33 +56,70 @@ def limitMax(val, limVal):
     if val >= limVal:
         return limVal
     return val
-
 def limitMin(val, limVal):
     if val <= limVal:
         return limVal
     return val
-
 def updateCurIndex():
-    global curIndexPath, curIndex
+    global curIndexPath, curIndex, font_size, font_bangla
     with open(curIndexPath, 'w', encoding='utf-8') as wf:
-        wf.writelines(str(curIndex))
+        wf.writelines(f"{curIndex}\n{font_bangla}\n{font_size}")
     wf.close()
+def hasKey(tempDIct={}, keyF=None):
+    keyList = list(tempDIct.keys())
+    if keyF in keyList:
+        return True
+    return False
+def getExtension(tempName=None):
+    if tempName != None:
+        if len(tempName.split(".")) > 1:
+            return tempName.split(".")[-1]
+    return ''
 
+
+root = Tk()
+root.config(bg=color_root_bg)
+root.title("ACCEPT OR REJECT")
+root.resizable(width=False, height=False)
+
+font_family_list = font.families()
+
+font_arial = 'Arial'
+
+fontExtList = ["otf", "otf", "fnt"]
+if font_bangla not in font_family_list:
+    fontFileList = []
+    for fnt in os.listdir(fontDir):
+        if getExtension(fnt).lower() in fontExtList:
+            fontFileList.append(fnt)
+            os.system(f"{fontDir}/{fnt}")
 
 curIndex = 0
 if os.path.exists(curIndexPath):
+    tempFont = font_bangla
+    tempSize = font_size
     with open(curIndexPath, 'r', encoding='utf-8') as rf:
         lines = rf.readlines()
     try:
         curIndex = int(lines[0].strip())
+        font_bangla = lines[1].strip()
+        font_size = int(lines[2].strip())
+
+        print(curIndex, font_bangla, font_size)
     except:
+        font_bangla =tempFont
+        font_size = tempSize
         updateCurIndex()
 
 else:
     updateCurIndex()
 
+# Akshar Unicode, Amar Bangla, AdorshoLipi, Nikosh, ChitraMJ, AdarshaLipiCon, AdarshaLipiExp  
+# AnandapatraCMJ, AtraiMJ, KumarkhaliMJ', SutonnyMJ, SutonnyOMJ, UrmeeMJ
+font_shutonni = font.Font(family=font_bangla, size=limitMax(int(font_size*.15), 10))
+font_shutonni_label = font.Font(family=font_bangla, size=font_size, weight=font.BOLD)
+font_button = font.Font(family=font_arial, size=limitMax(int(font_size*.25), 14), weight=font.BOLD)
 
-font_size = 96
 
 list_height = limitMax(int(font_size*.4), 32)
 list_width = limitMax(int(font_size*.25), 15)
@@ -83,25 +128,7 @@ canvas_width = limitMax(int(font_size*6.25), 800)
 padX = 10
 canvas_height = limitMax(int(canvas_width*.5), 400)
 
-root = Tk()
-root.config(bg=color_root_bg)
-root.title("ACCEPT OR REJECT")
 root.minsize(width=list_width*40, height=list_height*15)
-root.resizable(width=False, height=False)
-
-font_family_list = font.families()
-# Akshar Unicode, Amar Bangla, AdorshoLipi, Nikosh, ChitraMJ, AdarshaLipiCon, AdarshaLipiExp  
-# AnandapatraCMJ, AtraiMJ, KumarkhaliMJ', SutonnyMJ, SutonnyOMJ, UrmeeMJ
-font_shutonni = font.Font(family='Akshar Unicode', size=limitMax(int(font_size*.15), 10))
-font_shutonni_label = font.Font(family='Akshar Unicode', size=font_size, weight=font.BOLD)
-font_button = font.Font(family='Arial', size=limitMax(int(font_size*.25), 14), weight=font.BOLD)
-
-def hasKey(tempDIct={}, keyF=None):
-    keyList = list(tempDIct.keys())
-    if keyF in keyList:
-        return True
-    return False
-
 
 
 def rejectLetter(eve=None):
@@ -171,7 +198,7 @@ def updateLabel(eve=None):
     curLetter = all_letter_list[curIndex]
     label_comb['text'] = curLetter
     list_letter.select_set(curIndex)
-    list_letter.yview(curIndex-(font_size//6))
+    list_letter.yview(curIndex-int(font_size//6))
 
 def prevLetter(eve=None):
     global  curIndex, list_letter
@@ -339,6 +366,16 @@ def saveAllLetter(eve=None):
 
     print("Saved")
 
+def saveEnviroment(eve=None):
+    global font_bangla, font_size
+    font_bangla = str(curFontName.get())
+    font_size = int(curFontSize.get())
+    updateCurIndex()
+    root.destroy()
+    os.system("@echo off")
+    os.startfile(__file__)
+
+
 
 
 
@@ -351,15 +388,44 @@ frame_root.pack(expand=True, fill="both")
 
 
 
-frame_listAll = Frame(frame_root, bg=color_all_bg, \
+frame_listLetter = Frame(frame_root, bg=color_all_bg, \
     highlightbackground=color_all_bg, highlightcolor=color_all_bg, highlightthickness=0, border=0, borderwidth=0)
-frame_listAll.pack(padx=3, pady=5, expand=True, fill="y", side=LEFT)
+frame_listLetter.pack(padx=3, pady=5, expand=True, fill="y", side=LEFT)
+
+frame_font = Frame(frame_listLetter, bg=color_all_bg, \
+    highlightbackground=color_all_bg, highlightcolor=color_all_bg, highlightthickness=0, border=0, borderwidth=0)
+frame_font.pack(padx=3, pady=5, expand=True, fill="x")
+
+fontOptionList = font_family_list
+curFontName= StringVar(root)
+curFontName.set(font_bangla)
+menu_font_box = OptionMenu(frame_font, curFontName, *fontOptionList)
+menu_font_box.pack(padx=2, pady=3, expand=False)
+
+
+fontSizeList = []
+for i in range(16, 256, 16):
+    fontSizeList.append(i)
+curFontSize = IntVar(root)
+curFontSize.set(font_size)
+menu_font_size= OptionMenu(frame_font, curFontSize, *fontSizeList)
+menu_font_size.pack(padx=2, pady=3, expand=False, fill="x")
+
+button_save = Button(frame_listLetter, bg=color_root_bg, fg=color_root_fg, command=saveEnviroment,\
+    highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=2, borderwidth=2)
+button_save['text'] = "set".upper()
+button_save.pack(padx=3, pady=5, expand=True, fill="x")
+
+
+frame_listAll = Frame(frame_listLetter, bg=color_all_bg, \
+    highlightbackground=color_all_bg, highlightcolor=color_all_bg, highlightthickness=0, border=0, borderwidth=0)
+frame_listAll.pack(padx=3, pady=5, expand=True, fill="both")
 scrollY_listAll = Scrollbar(frame_listAll, orient=VERTICAL)
-list_letter = Listbox(frame_listAll, bg=color_all_bg, fg=color_all_fg, font=font_shutonni, height=list_height, width=list_width, yscrollcommand=scrollY_listAll.set, \
+list_letter = Listbox(frame_listAll, bg=color_all_bg, fg=color_all_fg, font=font_shutonni, height=list_height,yscrollcommand=scrollY_listAll.set, \
     highlightbackground=color_all_bg, highlightcolor=color_all_bg, highlightthickness=0, border=0, borderwidth=0)
 scrollY_listAll.config(command=list_letter.yview)
 scrollY_listAll.pack(padx=0, pady=0, expand=False, side=RIGHT, fill="y")
-list_letter.pack(padx=0, pady=0, expand=False, fill="y", side=LEFT)
+list_letter.pack(padx=0, pady=0, expand=False, fill="both", side=LEFT)
 
 
 frame_Label = Frame(frame_root, bg=color_lab_bg, \
@@ -386,10 +452,6 @@ button_prev = Button(frame_button_move, bg=color_root_bg, fg=color_root_fg, font
     highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=0, borderwidth=0)
 button_prev['text'] = "<<<".upper()
 button_prev.pack(padx=3, pady=5, expand=True, fill="x", side=LEFT)
-button_save = Button(frame_button_move, bg=color_root_bg, fg=color_root_fg, font=font_button, command=saveLetter,\
-    highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=2, borderwidth=2)
-button_save['text'] = "Save".upper()
-button_save.pack(padx=3, pady=5, expand=True, fill="x", side=LEFT)
 button_next = Button(frame_button_move, bg=color_root_bg, fg=color_root_fg, font=font_button, command=nexttLetter,\
     highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=0, borderwidth=0)
 button_next['text'] = ">>>".upper()
