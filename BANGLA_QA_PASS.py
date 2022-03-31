@@ -17,6 +17,7 @@ font_bangla = 'Akshar Unicode'
 
 curDir = f"{os.path.dirname(__file__)}/resource".replace("\\", "/")
 fontDir = f"{os.path.dirname(__file__)}/font".replace("\\", "/")
+jsonPath = f"{curDir}/class_map_corrected.json".replace("\\", "/")
 # inputFilePath = f'{curDir}/input.txt'
 inputFilePath = f'{curDir}/input.json'
 acceptedFilePath = f'{curDir}/accepted.txt'
@@ -28,6 +29,10 @@ acceptedImageDir= f'{curDir}/acceptedImage'
 
 # all_letter_list = GET_LETTER_LIST.getLetterList(inputFilePath)
 all_letter_list, all_letter_dict = GET_LETTER_LIST.getLetterListJSON(inputFilePath)
+
+with open(jsonPath, 'r', encoding='utf-8') as jo:
+    mainCLassDict = json.load(jo)
+
 accepted_letter_list = []
 rejected_letter_list = []
 accepted_letter_dict = {}
@@ -191,13 +196,17 @@ def acceptLetter(eve=None):
     nexttLetter()
 
 
-
 def updateLabel(eve=None):
-    global  curIndex, list_letter
+    global  curIndex, list_letter, all_letter_dict, mainCLassDict
     curLetter = all_letter_list[curIndex]
     label_comb['text'] = curLetter
+    r0 = mainCLassDict["grapheme_root"][all_letter_dict[curLetter]['r']]
+    c0 = mainCLassDict["consonant_diacritic"][all_letter_dict[curLetter]['c']]
+    v0 = mainCLassDict["vowel_diacritic"][all_letter_dict[curLetter]['v']]
+    label_cont['text'] = f"C:[{c0}] R:[{r0}] V:[{v0}]"
     list_letter.select_set(curIndex)
     list_letter.yview(curIndex-int(font_size//6))
+
 
 def prevLetter(eve=None):
     global  curIndex, list_letter
@@ -450,6 +459,9 @@ button_prev = Button(frame_button_move, bg=color_root_bg, fg=color_root_fg, font
     highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=0, borderwidth=0)
 button_prev['text'] = "<<<".upper()
 button_prev.pack(padx=3, pady=5, expand=True, fill="x", side=LEFT)
+label_cont = Label(frame_button_move, bg='White', fg='Black', \
+    highlightbackground='White', highlightcolor='White', highlightthickness=0, border=0, borderwidth=0)
+label_cont.pack(padx=0, pady=0, expand=True, fill="x", side=LEFT)
 button_next = Button(frame_button_move, bg=color_root_bg, fg=color_root_fg, font=font_button, command=nexttLetter,\
     highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=0, borderwidth=0)
 button_next['text'] = ">>>".upper()

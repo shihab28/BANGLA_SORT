@@ -11,6 +11,7 @@ with open(jsonPath, 'r', encoding='utf-8') as jo:
 # print(jsonOb.keys())
 # mainDict = json.loads(jsonOb)
 mainDict = jsonOb
+mainCLassDict = mainDict
 # print(mainDict)
 
 new_dictionary = {}
@@ -34,12 +35,18 @@ for root in list(new_dictionary["grapheme_root"].keys()):
 # grapheme_root, consonant_diacritic, vowel_diacritic
 
 leastList = ['1', '8', '9']
+mostList = ['2']
+rjList = ['3']
 for root in list(new_dictionary["grapheme_root"].keys())[11:]:
     for consonant in new_dictionary["consonant_diacritic"].keys():
         for vowel in new_dictionary["vowel_diacritic"].keys():
 
-            if consonant in leastList:
+            if new_dictionary["consonant_diacritic"][consonant] in leastList:
                 pattern_value = root + vowel + consonant
+            elif new_dictionary["consonant_diacritic"][consonant] in mostList:
+                pattern_value = consonant + root + vowel
+            elif new_dictionary["consonant_diacritic"][consonant] in rjList:
+                pattern_value = "র্" + root + "্য" + vowel
             else:
                 pattern_value = root + consonant + vowel
                 
@@ -59,3 +66,6 @@ json_out_file_path = f'{curDir}/input.json'.replace("\\", "/")
 
 with open(json_out_file_path, 'w', encoding='utf-8') as jo:
     json.dump(pattern_dictionary, jo)
+
+
+print("***************Pattern Created***************")
