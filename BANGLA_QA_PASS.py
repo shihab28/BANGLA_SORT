@@ -229,8 +229,6 @@ def saveLetter(eve=None, imageStatus=None):
     # bBox = (x, y, x1, y1)
     bBox = (x_0, y_0, x_1, y_1)
 
-    # print(bBox)
-
     if imageStatus.lower() == 'rejected' or imageStatus.lower() == 'r':
         imagePath = f"{rejectedImageDir}/{curLetter}.{imageExt}"
     elif imageStatus.lower() == 'accepted' or imageStatus.lower() == 'a':
@@ -361,6 +359,8 @@ def saveAllLetter(eve=None):
         wf.writelines('\n'.join(list(list_reject.get(0, END))))
     wf.close()
 
+
+    # print(type(rejected_letter_dict), type(rejected_letter_dict))
     with open(rejectedJSOnPath, 'w', encoding='utf-8') as jo:
         json.dump(rejected_letter_dict, jo)
     jo.close()

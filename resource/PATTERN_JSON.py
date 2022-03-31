@@ -44,5 +44,10 @@ for root in list(new_dictionary["grapheme_root"].keys())[13:]:
 
 json_out_file_path = f'{curDir}/input.json'.replace("\\", "/")
 
+
+# print(pattern_dictionary)
+# print(type(pattern_dictionary))
+# pattern_dictionary = json.dumps(pattern_dictionary, indent=3)
+
 with open(json_out_file_path, 'w', encoding='utf-8') as jo:
     json.dump(pattern_dictionary, jo)
