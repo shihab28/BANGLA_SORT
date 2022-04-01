@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, time
 import shutil
 import json
 
@@ -201,12 +201,17 @@ def updateLabel(eve=None):
     
     curLetter = all_letter_list[curIndex]
     label_comb['text'] = curLetter
-    r0 = mainCLassDict["grapheme_root"][all_letter_dict[curLetter]['r']]
-    c0 = mainCLassDict["consonant_diacritic"][all_letter_dict[curLetter]['c']]
-    v0 = mainCLassDict["vowel_diacritic"][all_letter_dict[curLetter]['v']]
-    label_cont['text'] = f"C:[{c0}] R:[{r0}] V:[{v0}]"
+    
+    try:
+        r0 = mainCLassDict["grapheme_root"][all_letter_dict[curLetter]['r']]
+        c0 = mainCLassDict["consonant_diacritic"][all_letter_dict[curLetter]['c']]
+        v0 = mainCLassDict["vowel_diacritic"][all_letter_dict[curLetter]['v']]
+        label_cont['text'] = f"C:[{c0}] R:[{r0}] V:[{v0}]"
+    except:
+        pass
     list_letter.select_set(curIndex)
     list_letter.yview(curIndex-int(font_size//6))
+    root.update()
 
 
 def prevLetter(eve=None):
@@ -229,7 +234,7 @@ def saveLetter(eve=None, imageStatus=None):
     curLetter = all_letter_list[curIndex]
 
     x=root.winfo_rootx() + frame_listAll.winfo_width()
-    y=root.winfo_rooty() + frame_button.winfo_height() + frame_button_move.winfo_height()
+    y=root.winfo_rooty() + frame_button.winfo_height() + frame_button_move.winfo_height() + padX
 
     y_0 = y + canvas_width//2 - font_size
     y_1 = y + canvas_width//2 + font_size
@@ -352,17 +357,59 @@ def updateListLetter(eve=None):
 
 # def controlPressed(eve=None):
 def updateAllLetters(eve=None):
-    global curIndex
+    global curIndex, list_letter, nameDIct, indexDIct, updateInd, root
+
+    print("Updating all")
     letFlag = 'a'
     tempCurInd = curIndex
+    temp_all_letter_list = list_letter.get(0, END)
+    # temp_all_letter_list.sort()
     if letFlag == 'a':
-        curIndex = 0
-        tempListName = []
+        # curIndex = 0
+        nameDIct = {}
+        indexDIct = {}
         tempLetterList = os.listdir(acceptedImageDir)
         for letr in tempLetterList:
-            letSize = os.path
+            tempFilePath = f"{acceptedImageDir}/{letr}"
+            letSize = int(os.path.getsize(tempFilePath))
+            # print(letr, letSize)
+            if letSize < 8000:
+                letName = (letr.split("."))[0]
+                nameDIct[letName] = letr
+                letIndex = temp_all_letter_list.index(letName)
+                if letIndex >= tempCurInd:
+                    indexDIct[letName] = letIndex
+                    # os.remove(tempFilePath)
+                    print(curIndex, letName)
+                            
+                    list_letter.yview(curIndex)
+                    # root.after(1000, updateLabel)
+                    curIndex = letIndex 
+                    updateLabel()
+                    root.update()
+                    root.update()
+                    root.update()
+                    root.update()
+                    root.update()
+                    root.update()
+                    time.sleep(.15)
+                    saveLetter(imageStatus='accepted')
+                    time.sleep(.15)
+    
+    startUpdating()
 
 
+def startUpdating(eve=None):
+    global curIndex, list_letter, nameDIct, indexDIct, updateInd
+    
+
+
+          
+
+
+    
+
+    
 
 
 def saveAllLetter(eve=None):
