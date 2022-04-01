@@ -198,6 +198,7 @@ def acceptLetter(eve=None):
 
 def updateLabel(eve=None):
     global  curIndex, list_letter, all_letter_dict, mainCLassDict
+    
     curLetter = all_letter_list[curIndex]
     label_comb['text'] = curLetter
     r0 = mainCLassDict["grapheme_root"][all_letter_dict[curLetter]['r']]
@@ -350,7 +351,18 @@ def updateListLetter(eve=None):
 
 
 # def controlPressed(eve=None):
-    
+def updateAllLetters(eve=None):
+    global curIndex
+    letFlag = 'a'
+    tempCurInd = curIndex
+    if letFlag == 'a':
+        curIndex = 0
+        tempListName = []
+        tempLetterList = os.listdir(acceptedImageDir)
+        for letr in tempLetterList:
+            letSize = os.path
+
+
 
 
 def saveAllLetter(eve=None):
@@ -379,6 +391,8 @@ def saveAllLetter(eve=None):
 
     print("Saved")
 
+
+
 def saveEnviroment(eve=None):
     global font_bangla, font_size
     font_bangla = str(curFontName.get())
@@ -387,6 +401,7 @@ def saveEnviroment(eve=None):
     root.destroy()
     os.system("@echo off")
     os.startfile(__file__)
+
 
 
 # highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=0, borderwidth=0
@@ -497,7 +512,12 @@ list_reject.pack(padx=0, pady=0, expand=True, fill="y", side=LEFT)
 button_accept_all = Button(frame_Choice, bg=color_root_bg, fg=color_root_fg, font=font_button, command=saveAllLetter,\
     highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=2, borderwidth=2)
 button_accept_all['text'] = "Save All".upper()
-button_accept_all.pack(padx=3, pady=5, expand=True, fill="x")
+button_accept_all.pack(padx=3, pady=2, expand=True, fill="x")
+
+button_update_all = Button(frame_Choice, bg=color_root_bg, fg=color_root_fg, font=font_button, command=updateAllLetters,\
+    highlightbackground=color_root_bg, highlightcolor=color_root_bg, highlightthickness=0, border=2, borderwidth=2)
+button_update_all['text'] = "Update All".upper()
+button_update_all.pack(padx=3, pady=2, expand=True, fill="x")
 
 frame_ListAcp = Frame(frame_Choice, bg=color_acp_bg, \
     highlightbackground=color_acp_bg, highlightcolor=color_acp_bg, highlightthickness=0, border=0, borderwidth=0)
