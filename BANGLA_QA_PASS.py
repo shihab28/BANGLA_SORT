@@ -256,12 +256,13 @@ def saveLetter(eve=None, imageStatus=None):
 
 
 def updateCord(eve=None):
-    global label_ends
+    global label_ends, list_accept, list_reject, list_letter, curIndex
     x=eve.x
     y=eve.y
 
+
     # print(x, y)
-    label_ends['text'] = f" [ {x} : {y} ]"
+    label_ends['text'] = f"[L: {len(list_letter.get(0, END))}, C: {curIndex}, A: {len(list_accept.get(0, END))}, R: {len(list_reject.get(0, END))},]  [ {x} : {y} ]"
 
 
 def showListMenu(eve=None):
