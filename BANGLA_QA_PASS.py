@@ -14,7 +14,6 @@ font_size = 128
 font_bangla = 'Akshar Unicode'
 ########################################################################
 
-
 curDir = f"{os.path.dirname(__file__)}/resource".replace("\\", "/")
 fontDir = f"{os.path.dirname(__file__)}/font".replace("\\", "/")
 jsonPath = f"{curDir}/class_map_corrected.json".replace("\\", "/")
@@ -29,7 +28,6 @@ acceptedImageDir= f'{curDir}/acceptedImage'
 
 # all_letter_list = GET_LETTER_LIST.getLetterList(inputFilePath)
 all_letter_list, all_letter_dict = GET_LETTER_LIST.getLetterListJSON(inputFilePath)
-
 
 
 with open(jsonPath, 'r', encoding='utf-8') as jo:
@@ -409,12 +407,7 @@ def startUpdating(eve=None):
     
 
 
-          
-
-
-    
-
-    
+            
 
 
 def saveAllLetter(eve=None):

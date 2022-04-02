@@ -3,12 +3,26 @@ import os
 
 curDir = os.path.dirname(__file__).replace("\\", "/")
 jsonPath = f"{curDir}/class_map_corrected.json".replace("\\", "/")
+acceptedJSONPath = f'{curDir}/accepted.json'
+rejectedJSOnPath = f'{curDir}/rejected.json'
 
 
 with open(jsonPath, 'r', encoding='utf-8') as jo:
     jsonOb = json.load(jo)
 
-# print(jsonOb.keys())
+acceptedJsonDict = {}
+with open(acceptedJSONPath, 'r', encoding='utf-8') as jo:
+    acceptedJsonDict = json.load(jo)
+acceptedJsonKeyList = list(acceptedJsonDict.keys())
+
+rejectedjsonDict = {}
+with open(rejectedJSOnPath, 'r', encoding='utf-8') as jo:
+    rejectedjsonDict = json.load(jo)
+rejectedjsonKeyList = list(rejectedjsonDict.keys())
+# print("acceptedJsonDict : ", acceptedJsonDict)
+# print("rejectedjsonDict : ", rejectedjsonDict)
+
+
 # mainDict = json.loads(jsonOb)
 mainDict = jsonOb
 mainCLassDict = mainDict
@@ -41,6 +55,41 @@ rjList = ['3']
 urListV = ['4', '5', '6']
 urListC = []
 
+new_dictionary_index_letter = {}
+new_dictionary_letter_index = {}
+
+curInd = 0
+for symb in list(new_dictionary["symbol_diacritic"].keys()):
+    pattern_value = symb
+    pattern_dictionary[pattern_value] = {
+        'c': '',
+        'r': '',
+        'v': '',
+        's': pattern_value
+    }
+
+    if pattern_value in acceptedJsonKeyList:
+        acceptedJsonDict[pattern_value] = {
+        'c': '',
+        'r': '',
+        'v': '',
+        's': pattern_value
+    }
+
+    elif pattern_value in rejectedjsonKeyList:
+        rejectedjsonDict[pattern_value] = {
+        'c': '',
+        'r': '',
+        'v': '',
+        's': pattern_value
+    }
+
+    new_dictionary_index_letter[str(curInd)] = symb
+    new_dictionary_letter_index[symb] = str(curInd)
+    curInd += 1
+
+
+
 for root in list(new_dictionary["grapheme_root"].keys())[11:]:
     for consonant in new_dictionary["consonant_diacritic"].keys():
         for vowel in new_dictionary["vowel_diacritic"].keys():
@@ -58,31 +107,106 @@ for root in list(new_dictionary["grapheme_root"].keys())[11:]:
                 pattern_value = "র্" + root + "্য" + vowel
             else:
                 pattern_value = root + consonant + vowel
-                
+
             pattern_dictionary[pattern_value] = {
                 'c': new_dictionary["consonant_diacritic"][consonant],
                 'r': new_dictionary["grapheme_root"][root],
-                'v': new_dictionary["vowel_diacritic"][vowel]
+                'v': new_dictionary["vowel_diacritic"][vowel],
+                's': ''
             }
 
-for symb in list(new_dictionary["symbol_diacritic"].keys()):
-    pattern_value = symb
-    pattern_dictionary[pattern_value] = {
-        'c': '',
-        'r': pattern_value,
-        'v': ''
-    }
+            if pattern_value in acceptedJsonKeyList:
+                acceptedJsonDict[pattern_value] = {
+                'c': new_dictionary["consonant_diacritic"][consonant],
+                'r': new_dictionary["grapheme_root"][root],
+                'v': new_dictionary["vowel_diacritic"][vowel],
+                's': ''
+            }
 
+            elif pattern_value in rejectedjsonKeyList:
+                rejectedjsonDict[pattern_value] = {
+                'c': new_dictionary["consonant_diacritic"][consonant],
+                'r': new_dictionary["grapheme_root"][root],
+                'v': new_dictionary["vowel_diacritic"][vowel],
+                's': ''
+            }
+        
+            new_dictionary_index_letter[str(curInd)] = pattern_value
+            new_dictionary_letter_index[pattern_value] = str(curInd)
+            curInd += 1
+
+
+# print("acceptedJsonDict : ", acceptedJsonDict)
+# print("rejectedjsonDict : ", rejectedjsonDict)
+
+for pattern_value in list(acceptedJsonDict.keys()):
+    
+    keyS = list(acceptedJsonDict[pattern_value].keys())
+    # print(acceptedJsonDict[pattern_value])
+    if 's' not in keyS:
+        acceptedJsonDict[pattern_value]['s'] = ""
+    
+    if 'r' not in keyS:
+        acceptedJsonDict[pattern_value]['r'] = ""
+
+    if 'v' not in keyS:
+        acceptedJsonDict[pattern_value]['v'] = ""
+
+    if 'c' not in keyS:
+        acceptedJsonDict[pattern_value]['c'] = ""
+
+
+for pattern_value in list(rejectedjsonDict.keys()):
+    keyS = list(rejectedjsonDict[pattern_value].keys())
+    # print(rejectedjsonDict[pattern_value])
+    if 's' not in keyS:
+        rejectedjsonDict[pattern_value]['s'] = ""
+    
+    if 'r' not in keyS:
+        rejectedjsonDict[pattern_value]['r'] = ""
+
+    if 'v' not in keyS:
+        rejectedjsonDict[pattern_value]['v'] = ""
+
+    if 'c' not in keyS:
+        rejectedjsonDict[pattern_value]['c'] = ""
+
+dictionary_index_letter = {}
+dictionary_index_letter['index_letter'] = new_dictionary_index_letter
+dictionary_index_letter['letter_index'] = new_dictionary_letter_index
 
 json_out_file_path = f'{curDir}/input.json'.replace("\\", "/")
+json_out_file_path_ind_let = f'{curDir}/index_letter.json'
+# json_out_file_path_let_ind = f'{curDir}/letter_index.json'
 
 
 # print(pattern_dictionary)
 # print(type(pattern_dictionary))
 # pattern_dictionary = json.dumps(pattern_dictionary, indent=3)
 
+# print("pattern_dictionary : ", type(pattern_dictionary), "\n", pattern_dictionary)
+# print("acceptedJsonDict : ", type(acceptedJsonDict), "\n", acceptedJsonDict)
+# print("rejectedjsonDict : ", type(rejectedjsonDict), "\n", rejectedjsonDict)
+
 with open(json_out_file_path, 'w', encoding='utf-8') as jo:
     json.dump(pattern_dictionary, jo)
+jo.close()
+
+with open(json_out_file_path_ind_let, 'w', encoding='utf-8') as jo:
+    json.dump(dictionary_index_letter, jo)
+jo.close()
+
+# with open(json_out_file_path_let_ind, 'w', encoding='utf-8') as jo:
+#     json.dump(new_dictionary_letter_index, jo)
+# jo.close()
+
+with open(acceptedJSONPath, 'w', encoding='utf-8') as jo:
+    json.dump(acceptedJsonDict, jo)
+jo.close()
+
+with open(rejectedJSOnPath, 'w', encoding='utf-8') as jo:
+    json.dump(rejectedjsonDict, jo)
+jo.close()
 
 
 print("***************Pattern Created***************")
