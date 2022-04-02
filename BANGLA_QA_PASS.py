@@ -30,6 +30,8 @@ acceptedImageDir= f'{curDir}/acceptedImage'
 # all_letter_list = GET_LETTER_LIST.getLetterList(inputFilePath)
 all_letter_list, all_letter_dict = GET_LETTER_LIST.getLetterListJSON(inputFilePath)
 
+
+
 with open(jsonPath, 'r', encoding='utf-8') as jo:
     mainCLassDict = json.load(jo)
 
@@ -37,7 +39,9 @@ accepted_letter_list = []
 rejected_letter_list = []
 accepted_letter_dict = {}
 rejected_letter_dict = {}
-print("Total Count : ", len(all_letter_list))
+
+maxInd =  len(all_letter_list)
+print("Total Count : ", maxInd)
 
 curIndexPath = f"{curDir}/curAtr.txt"
 
@@ -218,14 +222,15 @@ def prevLetter(eve=None):
     global  curIndex, list_letter
     list_letter.select_clear(curIndex)
     curIndex -= 1
+    curIndex %= maxInd
     updateLabel()
 
 def nexttLetter(eve=None):
-    global  curIndex, list_letter
+    global  curIndex, list_letter, maxInd
     list_letter.select_clear(curIndex)
     curIndex += 1
+    curIndex %= maxInd
     updateLabel()
-
 
 
 def saveLetter(eve=None, imageStatus=None):

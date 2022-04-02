@@ -34,13 +34,22 @@ for root in list(new_dictionary["grapheme_root"].keys()):
 
 # grapheme_root, consonant_diacritic, vowel_diacritic
 
+zeroList = ['0']
 leastList = ['1', '8', '9']
 mostList = ['2']
 rjList = ['3']
+urListV = ['4', '5', '6']
+urListC = []
+
 for root in list(new_dictionary["grapheme_root"].keys())[11:]:
     for consonant in new_dictionary["consonant_diacritic"].keys():
         for vowel in new_dictionary["vowel_diacritic"].keys():
-
+            
+            # if new_dictionary["consonant_diacritic"][consonant] in zeroList and new_dictionary["vowel_diacritic"][vowel] not in zeroList:
+            #     pattern_value = consonant + root + vowel 
+            # elif new_dictionary["consonant_diacritic"][consonant] not in zeroList and new_dictionary["vowel_diacritic"][vowel] in zeroList:
+            #     pattern_value = vowel + root + consonant
+            # el
             if new_dictionary["consonant_diacritic"][consonant] in leastList:
                 pattern_value = root + vowel + consonant
             elif new_dictionary["consonant_diacritic"][consonant] in mostList:
@@ -55,6 +64,14 @@ for root in list(new_dictionary["grapheme_root"].keys())[11:]:
                 'r': new_dictionary["grapheme_root"][root],
                 'v': new_dictionary["vowel_diacritic"][vowel]
             }
+
+for symb in list(new_dictionary["symbol_diacritic"].keys()):
+    pattern_value = symb
+    pattern_dictionary[pattern_value] = {
+        'c': '',
+        'r': pattern_value,
+        'v': ''
+    }
 
 
 json_out_file_path = f'{curDir}/input.json'.replace("\\", "/")
