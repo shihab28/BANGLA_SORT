@@ -58,6 +58,7 @@ color_lab_fg = '#3D2352'
 
 imageExt = 'png'
 
+
 def limitMax(val, limVal):
     if val >= limVal:
         return limVal
@@ -125,6 +126,7 @@ else:
 font_shutonni = font.Font(family=font_bangla, size=limitMax(int(font_size*.15), 10))
 font_shutonni_label = font.Font(family=font_bangla, size=font_size, weight=font.BOLD)
 font_button = font.Font(family=font_arial, size=limitMax(int(font_size*.25), 14), weight=font.BOLD)
+
 
 
 list_height = limitMax(int(font_size*.4), 32)
